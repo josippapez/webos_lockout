@@ -223,3 +223,7 @@ weboshub.lge.com
 weboshubmanager.lge.com
 wiseresource.lgtvcommon.com
 www.lgappstv.com
+
+# --- From HaGeZi's LG webOS tracker list (via r/pihole) ---
+ngfts.lge.com.edgekey.net
+lge.com.edgesuite.net

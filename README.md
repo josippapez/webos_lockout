@@ -25,7 +25,7 @@ Target TV comes from the `c5` alias in `~/.ssh/config`. Override with
 
 | Stage | Mechanism |
 |---|---|
-| Hosts blocklist | Bind-mounts a modified `/etc/hosts` sending 2889 LG telemetry names to `0.0.0.0` / `::1` |
+| Hosts blocklist | Bind-mounts a modified `/etc/hosts` sending 3204 LG telemetry names to `0.0.0.0` / `::1` |
 | Hardcoded IPs | `iptables` chain `LG_LOCKOUT` drops `156.147.69.32` and `54.186.247.229`, which bypass DNS |
 | Usage data | Sets `usageCare`, `dbgLogUpload`, `faultLogUpload` to `false` in `/var/luna/preferences/option` |
 
@@ -121,8 +121,15 @@ Run 2026-09-09 against webOS 10.3.1. Three independent methods, then merged.
    (`eu`, `te`, `xa`, `xb`) and are now included. No three-letter shape exists
    (`hrv.nextlgsdp.com` and friends do not resolve), so the region space is
    fully mapped. `scan-prefixes.sh` repeats this check on demand.
-3. **Community blocklists**, fetched and merged: 691 LG hostnames, of which 583
-   are produced by prefix expansion and 108 needed listing explicitly.
+3. **Community blocklists**, fetched and merged: 691 LG hostnames from
+   hugobatista, Perflyst, athimannil and the wassname gist, of which 583 are
+   produced by prefix expansion and 108 needed listing explicitly.
+4. **Reddit**, reached with `agent-browser` using a persistent profile in
+   headed mode (the default headless fingerprint gets "blocked by network
+   security"). r/pihole pointed to **HaGeZi's LG webOS tracker list**, 341
+   entries, which was the one maintained source the other four had not
+   surfaced. It contributed the Akamai `*.edgekey.net` CNAME targets for the
+   `ngfts` endpoints and the compound infra prefixes (`eic-qt2`, `qt2-aic`).
 
 Per-base regional endpoint counts, measured by DNS enumeration over 269
 prefixes:
@@ -137,10 +144,9 @@ prefixes:
 | `lgtviot.com` | 2 |
 | `lgtvcommon.com` | 1 |
 
-**Not covered: Reddit.** Four access paths were tried (JSON API, `old.reddit`
-via text fetch, a real browser, and connecting to an existing Chrome session).
-All returned 403 or "blocked by network security" from this network, so any
-Reddit-only domain is absent from this audit.
+Both the HaGeZi list and the merged community union now diff clean against the
+generated blocklist, with one exception: `h4g3z1-native.lgwebos.web.app` is
+HaGeZi's own list-verification canary, not an LG endpoint, so it is left out.
 
 **Result:** all six LG telemetry daemons (`sdx`, `rdxd`, `uploadd`,
 `admanager`, `iot-client`, `trigger_thinq`) hold zero external sockets.
@@ -153,3 +159,4 @@ Reddit-only domain is absent from this audit.
 - [hugobatista/lg-tv-ad-block](https://github.com/hugobatista/lg-tv-ad-block)
 - [Perflyst/PiHoleBlocklist](https://github.com/Perflyst/PiHoleBlocklist)
 - [athimannil/webos-pihole-blocklists](https://github.com/athimannil/webos-pihole-blocklists)
+- [hagezi/dns-blocklists — native.lgwebos.txt](https://github.com/hagezi/dns-blocklists)

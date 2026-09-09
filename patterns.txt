@@ -6,3 +6,9 @@
 {p}-ad-lgsmartad-com.aws-prd.net
 {p}-ngfts.lge.com
 {p}-gfts.lge.com
+
+# Akamai CNAME targets for the ngfts endpoints. Blocking ngfts.lge.com in the
+# hosts file short-circuits before CNAME resolution, so these matter only for a
+# code path that uses the edgekey name directly. Cheap to cover.
+# Confirmed live: eic-ngfts.lge.com.edgekey.net -> 23.205.182.43
+{p}-ngfts.lge.com.edgekey.net

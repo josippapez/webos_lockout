@@ -32,7 +32,11 @@ sic
 lab
 eic.lab
 qt2
+qt2-aic
+qt2-eic
 qt2-kic
+aic-qt2
+eic-qt2
 kic-qt2
 dev
 stg
