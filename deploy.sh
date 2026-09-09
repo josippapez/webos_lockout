@@ -25,6 +25,7 @@ cmd_install() {
   scp -q -o BatchMode=yes \
     "$HERE/tv/lockout.sh" "$HERE/tv/verify.sh" "$HERE/tv/undo.sh" \
     "$HERE/domains.txt" "$HERE/ips.txt" \
+    "$HERE/wildcard-bases.txt" "$HERE/prefixes.txt" \
     "$TV:$REMOTE/"
   sshtv "chmod 755 $REMOTE/*.sh && chmod 644 $REMOTE/*.txt"
   echo "==> registering boot hook $HOOK"

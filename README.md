@@ -25,7 +25,7 @@ Target TV comes from the `c5` alias in `~/.ssh/config`. Override with
 
 | Stage | Mechanism |
 |---|---|
-| Hosts blocklist | Bind-mounts a modified `/etc/hosts` sending 40 LG telemetry names to `0.0.0.0` / `::1` |
+| Hosts blocklist | Bind-mounts a modified `/etc/hosts` sending 562 LG telemetry names to `0.0.0.0` / `::1` |
 | Hardcoded IPs | `iptables` chain `LG_LOCKOUT` drops `156.147.69.32` and `54.186.247.229`, which bypass DNS |
 | Usage data | Sets `usageCare`, `dbgLogUpload`, `faultLogUpload` to `false` in `/var/luna/preferences/option` |
 
@@ -61,13 +61,22 @@ The hosts layer works because this firmware's `/etc/nsswitch.conf` reads
 - **No IPv6 filtering.** This kernel ships no `ip6_tables` module, so
   `ip6tables` cannot initialise a filter table. Both hardcoded LG endpoints are
   IPv4, so nothing is lost today, but an IPv6-only endpoint could not be dropped.
-- **Hosts files cannot wildcard.** Only the names in `domains.txt` are blocked.
-  A new LG subdomain needs adding by hand.
+- **Hosts files cannot wildcard**, which matters more than it sounds. `sdx`
+  stores the bare domain in
+  `/mnt/lg/cmn_data/sdp/sdx/server_addr_version.conf` and prepends the TV's
+  region code at runtime, so a Croatian set reaches `hr.nextlgsdp.com` even
+  with `nextlgsdp.com` blocked. `prefixes.txt` therefore enumerates the prefix
+  space (249 ISO 3166-1 alpha-2 codes from `/usr/share/zoneinfo/iso3166.tab`,
+  plus the regional and lab prefixes seen on-device) and `lockout.sh` expands it
+  against every base in `wildcard-bases.txt`. A new LG *base* domain still needs
+  adding by hand.
 - **AWS IoT MQTT is not blocked.** Push uses per-device certificates against
-  device-specific `*.amazonaws.com` endpoints. The TV currently holds
-  connections to `ec2-63-33-228-172.eu-west-1` and `ec2-34-242-48-77.eu-west-1`.
-  Blocking those needs router-level rules against AWS ranges, which would break
-  unrelated services.
+  device-specific `*.amazonaws.com` endpoints. Blocking those needs router-level
+  rules against AWS ranges, which would break unrelated services. Note that most
+  AWS connections a webOS TV holds are *not* LG: mapping sockets to owning
+  processes via `/proc` showed them belonging to the `netflix` app, `WebAppMgr`
+  and `com.webos.chrom` (Google FCM on port 5228). Check ownership before
+  assuming a connection is telemetry.
 - **Telemetry processes keep running.** `sdx`, `rdxd`, `uploadd`, `admanager`,
   `iot-client` and `trigger_thinq` are not killed, only denied egress and
   writable spool space.
@@ -83,7 +92,9 @@ The hosts layer works because this firmware's `/etc/nsswitch.conf` reads
 
 ```
 deploy.sh      macOS-side installer/runner
-domains.txt    hostnames to block (edit this, then re-install)
+domains.txt          hostnames to block (edit this, then re-install)
+wildcard-bases.txt   base domains whose every subdomain must be blocked
+prefixes.txt         subdomain prefixes expanded against those bases
 ips.txt        DNS-bypassing IPs to drop
 tv/lockout.sh  the boot script, installed as init.d/20-lg-lockout
 tv/verify.sh   read-only state report

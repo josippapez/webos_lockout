@@ -1,0 +1,4 @@
+# Base domains whose subdomains must all be blocked. Each is expanded against
+# every prefix in prefixes.txt, and the bare domain is blocked too.
+nextlgsdp.com
+lgtvcommon.com

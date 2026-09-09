@@ -7,6 +7,8 @@ set -u
 INSTALL_DIR=/var/lib/webosbrew/lg-lockout
 LOG="$INSTALL_DIR/lockout.log"
 HOSTS_SRC="$INSTALL_DIR/domains.txt"
+WILDCARD_SRC="$INSTALL_DIR/wildcard-bases.txt"
+PREFIX_SRC="$INSTALL_DIR/prefixes.txt"
 IPS_SRC="$INSTALL_DIR/ips.txt"
 HOSTS_BUILD=/tmp/lg-lockout-hosts
 MARKER='# --- lg-lockout ---'
@@ -44,6 +46,23 @@ stage_hosts() {
       echo "0.0.0.0 $d"
       echo "::1 $d"
     done
+
+    # Expand wildcard bases against the prefix list. A hosts file cannot
+    # wildcard, and sdx builds its endpoint as <region>.<base> at runtime
+    # (HR -> hr.nextlgsdp.com), so the bare base alone is not enough.
+    if [ -f "$WILDCARD_SRC" ] && [ -f "$PREFIX_SRC" ]; then
+      echo "# expanded from wildcard-bases.txt x prefixes.txt"
+      sed -e 's/#.*//' -e 's/[[:space:]]//g' "$WILDCARD_SRC" | while read -r base; do
+        [ -n "$base" ] || continue
+        echo "0.0.0.0 $base"
+        echo "::1 $base"
+        sed -e 's/#.*//' -e 's/[[:space:]]//g' "$PREFIX_SRC" | while read -r pre; do
+          [ -n "$pre" ] || continue
+          echo "0.0.0.0 $pre.$base"
+          echo "::1 $pre.$base"
+        done
+      done
+    fi
   } >> "$HOSTS_BUILD"
 
   count=$(grep -c '^0\.0\.0\.0 ' "$HOSTS_BUILD")

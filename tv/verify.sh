@@ -20,7 +20,8 @@ else
   bad "marker absent, hosts blocking not applied"
 fi
 if grep -q ' /etc/hosts ' /proc/mounts; then ok "/etc/hosts is bind-mounted"; else bad "/etc/hosts not bind-mounted"; fi
-for d in lgsmartad.com lgtvcommon.com common.lgthinq.com ngfts.lge.com; do
+for d in lgsmartad.com lgtvcommon.com common.lgthinq.com ngfts.lge.com \
+         hr.nextlgsdp.com eu.nextlgsdp.com gb.nextlgsdp.com eic.lab.lgtvcommon.com; do
   r=$(getent hosts "$d" 2>/dev/null | head -1 | awk '{print $1}')
   case "$r" in
     0.0.0.0|::1) ok "$d -> $r (blocked)" ;;
