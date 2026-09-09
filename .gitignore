@@ -1,0 +1,8 @@
+# On-TV runtime artifacts, never committed
+lockout.log
+*.bak
+*.lg-lockout.tmp
+
+# Editor / OS
+.DS_Store
+.claude/

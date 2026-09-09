@@ -1,0 +1,6 @@
+# Hardcoded LG endpoints that bypass DNS entirely, so a hosts entry cannot
+# touch them. Dropped with iptables in the LG_LOCKOUT chain.
+# 156.147.69.32 is the hardcoded fallback in /usr/sbin/update
+# (http://156.147.69.32:8080/CheckSWAutoUpdate.laf)
+156.147.69.32
+54.186.247.229

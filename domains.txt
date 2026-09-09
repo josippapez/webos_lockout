@@ -1,0 +1,60 @@
+# LG telemetry domains blocked via /etc/hosts bind-mount.
+# One hostname per line. '#' comments and blank lines ignored.
+# Hosts files cannot wildcard, so subdomains must be listed explicitly.
+#
+# DELIBERATELY NOT BLOCKED: OTA update hosts (su.lge.com, su-ssl.lge.com,
+# snu.lge.com, nsu.lge.com). Firmware updates stay reachable so they can be
+# reviewed and applied by choice. Homebrew Channel's own
+# webosbrew_block_updates flag covers those if that changes.
+
+# --- SDX / telemetry ---
+nextlgsdp.com
+ibs.nextlgsdp.com
+ibsstat.nextlgsdp.com
+rdx2.nextlgsdp.com
+lgtvcommon.com
+netflixvoice.lgtvcommon.com
+nudge.lgtvcommon.com
+homeprv.lgtvcommon.com
+wiseconfig.lgtvcommon.com
+pnv.lgtvcommon.com
+recommend.lgtvcommon.com
+cdpsvc.lgtvcommon.com
+cpauth.lgtvcommon.com
+cdpbeacon.lgtvcommon.com
+rdl.lgtvcommon.com
+wiseresource.lgtvcommon.com
+qcardservice.lgtvcommon.com
+qt2-kic.lab.lgtvcommon.com
+lggalleryplus.com
+tv.wiselg.com
+
+# --- Advertising ---
+lgsmartad.com
+info.lgsmartad.com
+
+# --- ThinQ / IoT ---
+lgtviot.com
+api.lgtviot.com
+commonpush.lgtviot.com
+sports.lgtviot.com
+ocp.lgtviot.com
+push.lgtviot.com
+buddy.lgtviot.com
+lgthinq.com
+common.lgthinq.com
+connect-client.lgthinq.com
+
+# --- AI / LLM ---
+ngfts.lge.com
+qt2-ngfts.lge.com
+kic-ngfts.lge.com
+kic-qt2-ngfts.lge.com
+
+# --- Voice (breaks voice search: accepted) ---
+lgsmartweb.com
+
+# --- Content Store (disables app install/update: accepted) ---
+lgtvsdp.com
+lgappstv.com
+lgshopsvc.lgappstv.com
