@@ -9,6 +9,7 @@ LOG="$INSTALL_DIR/lockout.log"
 HOSTS_SRC="$INSTALL_DIR/domains.txt"
 WILDCARD_SRC="$INSTALL_DIR/wildcard-bases.txt"
 PREFIX_SRC="$INSTALL_DIR/prefixes.txt"
+PATTERN_SRC="$INSTALL_DIR/patterns.txt"
 IPS_SRC="$INSTALL_DIR/ips.txt"
 HOSTS_BUILD=/tmp/lg-lockout-hosts
 MARKER='# --- lg-lockout ---'
@@ -17,7 +18,10 @@ OPTION_PREFS=/var/luna/preferences/option
 IPT=/usr/sbin/iptables
 IP6T=/usr/sbin/ip6tables
 
-log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" >> "$LOG"; [ -t 1 ] && echo "$*"; }
+# Note the trailing `:` — without it the failed `[ -t 1 ]` test becomes the
+# function's exit status, and the script's last log call would make run-parts
+# record a failure at every boot.
+log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" >> "$LOG"; if [ -t 1 ]; then echo "$*"; fi; :; }
 
 mkdir -p "$INSTALL_DIR"
 log "=== lockout start (pid $$) ==="
@@ -60,6 +64,22 @@ stage_hosts() {
           [ -n "$pre" ] || continue
           echo "0.0.0.0 $pre.$base"
           echo "::1 $pre.$base"
+        done
+      done
+    fi
+
+    # Expand hostname templates. LG encodes the region inside the label for
+    # some endpoints (hr-ad-lgsmartad-com.aws-prd.net), which a base+prefix
+    # pair cannot express.
+    if [ -f "$PATTERN_SRC" ] && [ -f "$PREFIX_SRC" ]; then
+      echo "# expanded from patterns.txt x prefixes.txt"
+      sed -e 's/#.*//' -e 's/[[:space:]]//g' "$PATTERN_SRC" | while read -r tpl; do
+        [ -n "$tpl" ] || continue
+        sed -e 's/#.*//' -e 's/[[:space:]]//g' "$PREFIX_SRC" | while read -r pre; do
+          [ -n "$pre" ] || continue
+          h=$(echo "$tpl" | sed "s/{p}/$pre/g")
+          echo "0.0.0.0 $h"
+          echo "::1 $h"
         done
       done
     fi

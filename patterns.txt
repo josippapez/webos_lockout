@@ -1,0 +1,8 @@
+# Hostname templates expanded against prefixes.txt. {p} is the prefix.
+# These exist because LG encodes the region inside the label rather than as a
+# separate one, so wildcard-bases.txt cannot express them.
+#
+# Confirmed live: hr-ad-lgsmartad-com.aws-prd.net -> 52.17.146.196
+{p}-ad-lgsmartad-com.aws-prd.net
+{p}-ngfts.lge.com
+{p}-gfts.lge.com

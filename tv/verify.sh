@@ -21,7 +21,10 @@ else
 fi
 if grep -q ' /etc/hosts ' /proc/mounts; then ok "/etc/hosts is bind-mounted"; else bad "/etc/hosts not bind-mounted"; fi
 for d in lgsmartad.com lgtvcommon.com common.lgthinq.com ngfts.lge.com \
-         hr.nextlgsdp.com eu.nextlgsdp.com gb.nextlgsdp.com eic.lab.lgtvcommon.com; do
+         hr.nextlgsdp.com eu.nextlgsdp.com an.nextlgsdp.com xk.nextlgsdp.com \
+         hr.lgsmartad.com hr.lgappstv.com hr.lgtvsdp.com aic.lgtviot.com \
+         hr-ad-lgsmartad-com.aws-prd.net aic-ngfts.lge.com \
+         alphonso.tv lgads.tv; do
   r=$(getent hosts "$d" 2>/dev/null | head -1 | awk '{print $1}')
   case "$r" in
     0.0.0.0|::1) ok "$d -> $r (blocked)" ;;
@@ -83,8 +86,24 @@ for p in sdx rdxd uploadd admanager iot-client trigger_thinq; do
   if pgrep -x "$p" >/dev/null 2>&1; then note "$p running (egress blocked, process not killed)"; fi
 done
 echo
-echo "[7] current external connections"
-netstat -tn 2>/dev/null | awk '/ESTABLISHED/{print $5}' | grep -v '^127\.' | sort -u | sed 's/^/        /'
+echo "[7] external connections, by owning process"
+echo "      (an AWS endpoint is usually Netflix or Google FCM, not LG telemetry)"
+if [ -x "$(dirname "$0")/sockets.py" ]; then
+  python3 "$(dirname "$0")/sockets.py"
+else
+  netstat -tn 2>/dev/null | awk '/ESTABLISHED/{print $5}' | grep -v '^127\.' | sort -u | sed 's/^/        /'
+fi
+echo
+echo "[8] LG telemetry daemons: external sockets (expect none)"
+for p in sdx rdxd uploadd admanager iot-client trigger_thinq; do
+  pgrep -x "$p" >/dev/null 2>&1 || continue
+  out=$(python3 "$(dirname "$0")/sockets.py" "$p" 1 2>/dev/null | sed 's/^  t+0s  //')
+  case "$out" in
+    *"no external sockets"*) ok "$out" ;;
+    "")                      note "$p: could not read" ;;
+    *)                       bad "$out" ;;
+  esac
+done
 echo
 if [ "$fail" -eq 0 ]; then echo "RESULT: all checks passed"; else echo "RESULT: $fail check(s) failed"; fi
 exit 0

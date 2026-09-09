@@ -1,60 +1,225 @@
-# LG telemetry domains blocked via /etc/hosts bind-mount.
+# LG telemetry hostnames blocked via the /etc/hosts bind-mount.
 # One hostname per line. '#' comments and blank lines ignored.
-# Hosts files cannot wildcard, so subdomains must be listed explicitly.
+#
+# This file holds names that the prefix expansion does NOT generate. Regional
+# variants live in wildcard-bases.txt x prefixes.txt and patterns.txt instead.
 #
 # DELIBERATELY NOT BLOCKED: OTA update hosts (su.lge.com, su-ssl.lge.com,
 # snu.lge.com, nsu.lge.com). Firmware updates stay reachable so they can be
 # reviewed and applied by choice. Homebrew Channel's own
 # webosbrew_block_updates flag covers those if that changes.
 
-# --- SDX / telemetry ---
-nextlgsdp.com
-ibs.nextlgsdp.com
-ibsstat.nextlgsdp.com
-rdx2.nextlgsdp.com
-lgtvcommon.com
-netflixvoice.lgtvcommon.com
-nudge.lgtvcommon.com
-homeprv.lgtvcommon.com
-wiseconfig.lgtvcommon.com
-pnv.lgtvcommon.com
-recommend.lgtvcommon.com
-cdpsvc.lgtvcommon.com
-cpauth.lgtvcommon.com
-cdpbeacon.lgtvcommon.com
-rdl.lgtvcommon.com
-wiseresource.lgtvcommon.com
-qcardservice.lgtvcommon.com
-qt2-kic.lab.lgtvcommon.com
-lggalleryplus.com
-tv.wiselg.com
+# --- ACR / ad vendors (both resolve to 141.193.213.10) ---
+alphonso.tv
+lgads.tv
 
-# --- Advertising ---
-lgsmartad.com
-info.lgsmartad.com
-
-# --- ThinQ / IoT ---
-lgtviot.com
-api.lgtviot.com
-commonpush.lgtviot.com
-sports.lgtviot.com
-ocp.lgtviot.com
-push.lgtviot.com
-buddy.lgtviot.com
-lgthinq.com
-common.lgthinq.com
-connect-client.lgthinq.com
-
-# --- AI / LLM ---
-ngfts.lge.com
-qt2-ngfts.lge.com
-kic-ngfts.lge.com
-kic-qt2-ngfts.lge.com
+# --- LG platform domains referenced by community blocklists ---
+# Some do not currently resolve; kept because the lists track them and LG has
+# rotated endpoints before.
+lgsmartplatform.com
+lgtvlink.com
+lgwebostv.com
+app.lgwebostv.com
+lgeapi.com
+ueiwsp.com
 
 # --- Voice (breaks voice search: accepted) ---
 lgsmartweb.com
 
-# --- Content Store (disables app install/update: accepted) ---
-lgtvsdp.com
-lgappstv.com
+# --- Gallery / misc ---
+lggalleryplus.com
+wiselg.com
+tv.wiselg.com
+
+# --- Merged from community blocklists (names not covered by expansion) ---
+# Sources: hugobatista/lg-tv-ad-block, Perflyst/PiHoleBlocklist SmartTV.txt,
+# athimannil/webos-pihole-blocklists, wassname gist.
+ads.lgtvcommon.com
+aic-gfts.nextlgsdp.com
+aic-op-lss.lgthinq.com
+aic.ads.lgtvcommon.com
+aic.api.lgtviot.com
+aic.cdpbeacon.lgtvcommon.com
+aic.cdpbeacon2.lgtvcommon.com
+aic.cdplauncher.lgtvcommon.com
+aic.cdpsvc.lgtvcommon.com
+aic.homeprv.lgtvcommon.com
+aic.lgchhomeapp.lgtvcommon.com
+aic.nudge.lgtvcommon.com
+aic.rdl.lgtvcommon.com
+aic.recommend.lgtvcommon.com
+aic.sports.lgtviot.com
+aic.wiseconfig.lgtvcommon.com
+alphonso.tv
+cdpbeacon.lgtvcommon.com
+cdpbeacon2.lgtvcommon.com
+common.lgthinq.com
+config.lgtvsdp.com
+de.ad.lgsmartad.com
+eic-connect-client.lgthinq.com
+eic-gfts.nextlgsdp.com
+eic-ngfts.tv.wiselg.com
+eic-qt2-ngfts.lge.com
+eic.ads.lgtvcommon.com
+eic.api.lgtviot.com
+eic.cdpbeacon.lgtvcommon.com
+eic.cdpbeacon2.lgtvcommon.com
+eic.cdplauncher.lgtvcommon.com
+eic.cdpsvc.lgtvcommon.com
+eic.commonpush.lgtviot.com
+eic.homeprv.lgtvcommon.com
+eic.lgchhomeapp.lgtvcommon.com
+eic.nudge.lgtvcommon.com
+eic.rdl.lgtvcommon.com
+eic.recommend.lgtvcommon.com
+eic.sports.lgtviot.com
+eic.tv.wiselg.com
+eic.wiseconfig.lgtvcommon.com
+eu.ad.lgsmartad.com
+fr.security.lgtvsdp.com
+homeprv.lgtvcommon.com
+ibis.lgappstv.com
+ibs.lgappstv.com
+info.lgsmartad.com
+jp.info.lgsmartad.com
+jp.rdx2.lgtvsdp.com
+kic.ads.lgtvcommon.com
+kic.api.lgtviot.com
+kic.cdpbeacon.lgtvcommon.com
+kic.cdpbeacon2.lgtvcommon.com
+kic.cdplauncher.lgtvcommon.com
+kic.cdpsvc.lgtvcommon.com
+kic.homeprv.lgtvcommon.com
+kic.lgchhomeapp.lgtvcommon.com
+kic.nudge.lgtvcommon.com
+kic.rdl.lgtvcommon.com
+kic.recommend.lgtvcommon.com
+kic.sports.lgtviot.com
+kic.wiseconfig.lgtvcommon.com
+lgads.tv
+lgsmartad.lgtvsdp.com
+lgtvonline.lge.com
+lss.lgthinq.com
+ngfts.lge.com
+ngfts.nextlgsdp.com
+nudge.lgtvcommon.com
+prd-api.lgthinq.com
+pt.ad.lgsmartad.com
+pt.elastic.lgwebostv.com
+pt.emp.lgsmartplatform.com
+pt.ibs.lgappstv.com
+pt.info.lgsmartad.com
+pt.lgeapi.com
+pt.lgrecommends.lgappstv.com
+pt.rdx2.lgtvsdp.com
+pt.rdx2.nextlgsdp.com
+rdl.lgtvcommon.com
+rdx2.lgtvsdp.com
+ruc-ngfts.lge.com
+ruc.api.lgtviot.com
+ruc.homeprv.lgtvcommon.com
+ruc.lgtviot.com
+ruc.nudge.lgtvcommon.com
+ruc.recommend.lgtvcommon.com
+ruc.sports.lgtviot.com
+ruc.wiseconfig.lgtvcommon.com
+smartshare.lgtvsdp.com
+snc.lge.com
+snu.lge.com
+tracking.lgtvsdp.com
+us.ad.lgsmartad.com
+us.cdpbeacon.lgtvcommon.com
+us.cdpsvc.lgtvcommon.com
+us.emp.lgsmartplatform.com
+us.homeprv.lgtvcommon.com
+us.ibs.lgappstv.com
+us.info.lgsmartad.com
+us.lgeapi.com
+us.nudge.lgtvcommon.com
+us.rdl.lgtvcommon.com
+us.rdx2.lgtvsdp.com
+us.recommend.lgtvcommon.com
+us.service.lgtvcommon.com
+wiseconfig.lgtvcommon.com
+www.ueiwsp.com
+
+# --- Found on-device (webOS 10.3.1) by sweeping binaries and config ---
+# Discovered with grep over /usr/sbin /usr/bin /usr/lib /usr/palm /etc
+# /var/luna /mnt/lg/cmn_data: 2568 distinct LG hostnames referenced, of which
+# these were not covered by the lists above or by prefix expansion.
+# Notable: videoacr.lgtvcommon.com and videoads.lgtvcommon.com.
+#
+# Excluded here on purpose: OTA hosts (nsu.lge.com, snu-dev.lge.com, snu.lge.com, su-ssl.lge.com, su.lge.com)
+# and LG's website/developer portal, which are not telemetry.
+aic-connect-client.lgthinq.com
+aic-qa-connect-client.lgthinq.com
+aic-qa-lss.lgthinq.com
+aic-qa-service.lgthinq.com
+aic-qt2-ngfts.lge.com
+aic-service.lgthinq.com
+aic.lab.lgtvcommon.com
+api.lgtviot.com
+buddy.lgtviot.com
+cdpsvc.lgtvcommon.com
+commonpush.lgtviot.com
+connect-client.lgthinq.com
+cpauth.lgtvcommon.com
+dev-ruc-ngfts.tv.wiselg.com
+eic-op-lss.lgthinq.com
+eic-qa-connect-client.lgthinq.com
+eic-qa-lss.lgthinq.com
+eic-qa-service.lgthinq.com
+eic-service.lgthinq.com
+fooddelivery.lgtvcommon.com
+he-eu-ai.lgthinq.com
+hlm.lge.com
+ibs.nextlgsdp.com
+ibsstat.nextlgsdp.com
+iotservice.lgthinq.com
+kic-connect-client.lgthinq.com
+kic-op-lss.lgthinq.com
+kic-qa-connect-client.lgthinq.com
+kic-qa-lss.lgthinq.com
+kic-qa-service.lgthinq.com
+kic-qt-ngfts.lge.com
+kic-service.lgthinq.com
+kic-st-iotservice.lgthinq.com
+kic.lab.lgtvcommon.com
+lgchhomeapp.lgtvcommon.com
+lgrecommends.lgappstv.com
 lgshopsvc.lgappstv.com
+lgtvbrowser.lgtvsdp.com
+lsms.lge.com
+mod.lge.com
+netflixvoice.lgtvcommon.com
+ocp.lgtviot.com
+pnv.lgtvcommon.com
+push.lgtviot.com
+qcardservice.lgtvcommon.com
+qt2-kic.cdpsvc.lgtvcommon.com
+qt2-kic.lab.lgtvcommon.com
+qt2-kic.service.lgtvcommon.com
+qt2-kic.uei.lgtviot.com
+rdx2.nextlgsdp.com
+recommend.lgtvcommon.com
+rone-aic.lge.com
+rone-eic.lge.com
+rone-kic.lge.com
+rone-saic.lge.com
+rone-tv-aic.lge.com
+rone-tv-cic.lge.com
+rone-tv-eic.lge.com
+rone-tv-kic.lge.com
+rone-tv-saic.lge.com
+ruic-qa-service.lgthinq.com
+ruic-service.lgthinq.com
+sports.lgtviot.com
+videoacr.lgtvcommon.com
+videoads.lgtvcommon.com
+wall.lge.com
+wam.lge.com
+wau.lgtvcommon.com
+weboshub.lge.com
+weboshubmanager.lge.com
+wiseresource.lgtvcommon.com
+www.lgappstv.com

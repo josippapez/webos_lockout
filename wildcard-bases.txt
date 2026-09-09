@@ -1,4 +1,13 @@
 # Base domains whose subdomains must all be blocked. Each is expanded against
-# every prefix in prefixes.txt, and the bare domain is blocked too.
+# every prefix in prefixes.txt; the bare domain is blocked too.
+#
+# Live regional hostname counts measured by DNS enumeration over 269 prefixes:
+#   lgtvsdp.com 186, lgappstv.com 162, lgsmartad.com 160, lgthinq.com 153,
+#   nextlgsdp.com 248, lgtviot.com 2, lgtvcommon.com 1
 nextlgsdp.com
 lgtvcommon.com
+lgsmartad.com
+lgthinq.com
+lgappstv.com
+lgtvsdp.com
+lgtviot.com

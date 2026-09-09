@@ -1,22 +1,38 @@
-# Subdomain prefixes expanded against every base in wildcard-bases.txt.
-# A hosts file cannot wildcard, so the prefix space is enumerated instead.
+# Subdomain prefixes expanded against wildcard-bases.txt and patterns.txt.
+# A hosts file cannot wildcard, so the prefix space is enumerated.
 #
-# Why this exists: sdx stores the bare domain "nextlgsdp.com" in
-# /mnt/lg/cmn_data/sdp/sdx/server_addr_version.conf and prepends the TV's
-# region code at runtime, e.g. HR -> hr.nextlgsdp.com. Blocking only the bare
-# domain leaves every regional endpoint reachable.
+# sdx stores the bare domain in server_addr_version.conf and prepends the TV's
+# region code at runtime (HR -> hr.nextlgsdp.com), so the bare domain alone
+# leaves every regional endpoint reachable.
 #
-# Country codes below are ISO 3166-1 alpha-2, taken from
-# /usr/share/zoneinfo/iso3166.tab (249 entries), lowercased.
+# Country codes are ISO 3166-1 alpha-2 from /usr/share/zoneinfo/iso3166.tab.
+# 248 of them resolve for nextlgsdp.com; the extras below were confirmed live
+# by direct DNS query and are NOT in the ISO file.
 
-# --- regional / infrastructure prefixes observed on-device ---
+# --- legacy / non-ISO / supranational codes, confirmed to resolve ---
+# Found by brute-forcing all 676 two-letter combinations against
+# nextlgsdp.com: 253 resolve, and these are the ones absent from the ISO file.
+# Re-run ./scan-prefixes.sh to detect new ones.
+an
+tp
+xk
 eu
-gb
+te
+xa
+xb
+
+# --- regional infrastructure clusters, confirmed to resolve ---
+aic
+eic
+kic
+oic
+sic
+
+# --- lab / staging prefixes seen in on-device config ---
 lab
 eic.lab
 qt2
 qt2-kic
-kic
 kic-qt2
 dev
 stg
