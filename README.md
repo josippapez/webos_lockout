@@ -25,7 +25,7 @@ Target TV comes from the `c5` alias in `~/.ssh/config`. Override with
 
 | Stage | Mechanism |
 |---|---|
-| Hosts blocklist | Bind-mounts a modified `/etc/hosts` sending 562 LG telemetry names to `0.0.0.0` / `::1` |
+| Hosts blocklist | Bind-mounts a modified `/etc/hosts` sending 2889 LG telemetry names to `0.0.0.0` / `::1` |
 | Hardcoded IPs | `iptables` chain `LG_LOCKOUT` drops `156.147.69.32` and `54.186.247.229`, which bypass DNS |
 | Usage data | Sets `usageCare`, `dbgLogUpload`, `faultLogUpload` to `false` in `/var/luna/preferences/option` |
 
@@ -91,21 +91,65 @@ The hosts layer works because this firmware's `/etc/nsswitch.conf` reads
 ## Layout
 
 ```
-deploy.sh      macOS-side installer/runner
-domains.txt          hostnames to block (edit this, then re-install)
-wildcard-bases.txt   base domains whose every subdomain must be blocked
-prefixes.txt         subdomain prefixes expanded against those bases
-ips.txt        DNS-bypassing IPs to drop
-tv/lockout.sh  the boot script, installed as init.d/20-lg-lockout
-tv/verify.sh   read-only state report
-tv/undo.sh     reverts everything
+deploy.sh            macOS-side installer/runner
+scan-prefixes.sh     re-scan the region prefix space for new endpoints
+domains.txt          explicit hostnames (192 entries)
+wildcard-bases.txt   base domains whose every subdomain must be blocked (7)
+prefixes.txt         region/infra prefixes expanded against bases (269)
+patterns.txt         hostname templates where {p} is the region prefix (3)
+ips.txt              DNS-bypassing IPs to drop
+tv/lockout.sh        the boot script, installed as init.d/20-lg-lockout
+tv/verify.sh         read-only state report
+tv/sockets.py        maps external connections to owning processes
+tv/undo.sh           reverts everything
 ```
 
 `run-parts` runs `init.d` in lexical order and skips filenames containing dots,
 hence the extensionless `20-lg-lockout`, which sorts before the existing
 `restore_dts25` audio hook.
 
+## Coverage audit
+
+Run 2026-09-09 against webOS 10.3.1. Three independent methods, then merged.
+
+1. **On-device sweep.** grep over `/usr/sbin`, `/usr/bin`, `/usr/lib`,
+   `/usr/palm`, `/etc`, `/var/luna` and `/mnt/lg/cmn_data` found **2568 distinct
+   LG hostnames** referenced in binaries and config. 82 were uncovered,
+   including `videoacr.lgtvcommon.com` and `videoads.lgtvcommon.com`.
+2. **Region brute-force.** All 676 two-letter prefixes queried against
+   `nextlgsdp.com`: **253 resolve.** Four were absent from the ISO-derived list
+   (`eu`, `te`, `xa`, `xb`) and are now included. No three-letter shape exists
+   (`hrv.nextlgsdp.com` and friends do not resolve), so the region space is
+   fully mapped. `scan-prefixes.sh` repeats this check on demand.
+3. **Community blocklists**, fetched and merged: 691 LG hostnames, of which 583
+   are produced by prefix expansion and 108 needed listing explicitly.
+
+Per-base regional endpoint counts, measured by DNS enumeration over 269
+prefixes:
+
+| Base | Live regional endpoints |
+|---|---|
+| `nextlgsdp.com` | 248 |
+| `lgtvsdp.com` | 186 |
+| `lgappstv.com` | 162 |
+| `lgsmartad.com` | 160 |
+| `lgthinq.com` | 153 |
+| `lgtviot.com` | 2 |
+| `lgtvcommon.com` | 1 |
+
+**Not covered: Reddit.** Four access paths were tried (JSON API, `old.reddit`
+via text fetch, a real browser, and connecting to an existing Chrome session).
+All returned 403 or "blocked by network security" from this network, so any
+Reddit-only domain is absent from this audit.
+
+**Result:** all six LG telemetry daemons (`sdx`, `rdxd`, `uploadd`,
+`admanager`, `iot-client`, `trigger_thinq`) hold zero external sockets.
+`verify.sh` section 8 asserts this on every run.
+
 ## Sources
 
 - [LG TV Block Mini-How-to, Level1Techs](https://forum.level1techs.com/t/lg-tv-block-mini-how-to/255178)
 - [webosbrew/webos-homebrew-channel](https://github.com/webosbrew/webos-homebrew-channel)
+- [hugobatista/lg-tv-ad-block](https://github.com/hugobatista/lg-tv-ad-block)
+- [Perflyst/PiHoleBlocklist](https://github.com/Perflyst/PiHoleBlocklist)
+- [athimannil/webos-pihole-blocklists](https://github.com/athimannil/webos-pihole-blocklists)
