@@ -125,7 +125,6 @@ ruc.sports.lgtviot.com
 ruc.wiseconfig.lgtvcommon.com
 smartshare.lgtvsdp.com
 snc.lge.com
-snu.lge.com
 tracking.lgtvsdp.com
 us.ad.lgsmartad.com
 us.cdpbeacon.lgtvcommon.com
