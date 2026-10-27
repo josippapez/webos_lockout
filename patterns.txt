@@ -7,6 +7,12 @@
 {p}-ngfts.lge.com
 {p}-gfts.lge.com
 
+# Per-country ad and ad-info servers. domains.txt only listed de/eu/pt/us/jp.
+# Confirmed live: hr.ad.lgsmartad.com -> 52.213.35.129,
+#                 hr.info.lgsmartad.com -> 108.133.211.150
+{p}.ad.lgsmartad.com
+{p}.info.lgsmartad.com
+
 # Akamai CNAME targets for the ngfts endpoints. Blocking ngfts.lge.com in the
 # hosts file short-circuits before CNAME resolution, so these matter only for a
 # code path that uses the edgekey name directly. Cheap to cover.

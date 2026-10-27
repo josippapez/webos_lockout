@@ -96,7 +96,7 @@ scan-prefixes.sh     re-scan the region prefix space for new endpoints
 domains.txt          explicit hostnames (192 entries)
 wildcard-bases.txt   base domains whose every subdomain must be blocked (7)
 prefixes.txt         region/infra prefixes expanded against bases (269)
-patterns.txt         hostname templates where {p} is the region prefix (3)
+patterns.txt         hostname templates where {p} is the region prefix (6)
 ips.txt              DNS-bypassing IPs to drop
 tv/lockout.sh        the boot script, installed as init.d/20-lg-lockout
 tv/verify.sh         read-only state report
