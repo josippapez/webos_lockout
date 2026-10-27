@@ -18,6 +18,12 @@ for tool in "$IPT" "$IP6T"; do
   while "$tool" -C OUTPUT -j "$CHAIN" 2>/dev/null; do "$tool" -D OUTPUT -j "$CHAIN"; done
   "$tool" -F "$CHAIN" 2>/dev/null && "$tool" -X "$CHAIN" 2>/dev/null && echo "  $(basename "$tool"): $CHAIN removed"
 done
+for b in remotelogger service-logger contentminer nudge acr2 sportsalarm; do
+  grep -q " /usr/sbin/$b " /proc/mounts && umount "/usr/sbin/$b" && echo "  $b: stub unmounted"
+done
+for u in remotelogger service-logger contentminer nudge; do
+  systemctl --no-block start "$u.service" >/dev/null 2>&1 && echo "  $u: started"
+done
 if [ -f "${OPTION_PREFS}.lg-lockout.bak" ]; then
   cp "${OPTION_PREFS}.lg-lockout.bak" "$OPTION_PREFS" && sync && echo "  prefs: restored from backup (reboot to apply)"
 else

@@ -167,8 +167,31 @@ PY
   sync
 }
 
+# --- Stage 4: tracking, log and suggestion daemons -----------------------
+# Same set as cleanyourtv-WebOS's debloat minus its "ads" group: its
+# scripts/undo-home.sh notes LG's own Home fails to start without admanager and
+# adoverlay-service. Nothing Requires= these units (only boot targets want them).
+# A no-op stub is bind-mounted over each binary (RAM only, gone at reboot), so
+# anything that starts one later (a boot target that runs after this hook, or
+# ls-hubd for the on-demand luna services acr2 and sportsalarm) gets a clean
+# exit 0, which Restart=on-failure leaves alone. `systemctl mask --runtime`
+# does not work here: the units live in /etc/systemd/system, which outranks /run.
+DAEMON_UNITS="remotelogger service-logger contentminer nudge"
+DAEMON_BINS="$DAEMON_UNITS acr2 sportsalarm"
+stage_daemons() {
+  printf '#!/bin/sh\nexit 0\n' > "$INSTALL_DIR/stub-noop" && chmod 755 "$INSTALL_DIR/stub-noop"
+  for b in $DAEMON_BINS; do
+    [ -e "/usr/sbin/$b" ] || continue
+    grep -q " /usr/sbin/$b " /proc/mounts || mount --bind "$INSTALL_DIR/stub-noop" "/usr/sbin/$b"
+  done
+  for u in $DAEMON_UNITS; do systemctl --no-block stop "$u.service" >/dev/null 2>&1; done
+  for b in $DAEMON_BINS; do pkill -9 -f "^/usr/sbin/$b"; done
+  log "daemons: stubbed $DAEMON_BINS"
+}
+
 stage_hosts
 stage_iptables
 stage_prefs
+stage_daemons
 
 log "=== lockout done ==="

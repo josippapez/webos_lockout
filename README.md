@@ -25,9 +25,10 @@ Target TV comes from the `c5` alias in `~/.ssh/config`. Override with
 
 | Stage | Mechanism |
 |---|---|
-| Hosts blocklist | Bind-mounts a modified `/etc/hosts` sending 3204 LG telemetry names to `0.0.0.0` / `::1` |
+| Hosts blocklist | Bind-mounts a modified `/etc/hosts` sending 3749 LG telemetry names to `0.0.0.0` / `::1` |
 | Hardcoded IPs | `iptables` chain `LG_LOCKOUT` drops `156.147.69.32` and `54.186.247.229`, which bypass DNS |
 | Usage data | Sets `usageCare`, `dbgLogUpload`, `faultLogUpload` to `false` in `/var/luna/preferences/option` |
+| Daemons | Bind-mounts a no-op over `remotelogger`, `service-logger`, `contentminer`, `nudge`, `acr2` (viewing tracking) and `sportsalarm`, then stops them. `admanager`/`adoverlay-service` stay, because LG's Home needs them |
 
 The hosts layer works because this firmware's `/etc/nsswitch.conf` reads
 `hosts:files mdns myhostname mdns4_minimal [NOTFOUND=return] dns`, so
